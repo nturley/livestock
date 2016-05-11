@@ -32,8 +32,7 @@ class SaleCategory:
         return 'CLASS: ' + self.saletype.ljust(14) + \
              '  HD: ' + self.number.rjust(3) + \
              '  WEIGHT: ' + self.weight.rjust(10) + \
-             '  PRICE RANGE: ' + self.price_range.rjust(9) + \
-             '  PRICE AVERAGE: ' + self.price_average.rjust(7) + \
+             '  PRICE: ' + self.price_average.rjust(7) + \
              '  PF: ' + self.price_unit.rjust(3)
 
 # each sale has a class
@@ -71,14 +70,14 @@ f.close()
 for cell in s.split('\n'):
     cell = cell.strip().upper()
     # ignore until we see a class type
-    if (state == IGNORE and cell in classtypes):
+    if (state is IGNORE and cell in classtypes):
         state = DEFAULT
         currentRow.append(cell)
     # consume cells
-    elif (state == DEFAULT and not cell in pftypes):
+    elif (state is DEFAULT and not cell in pftypes):
         currentRow.append(cell)
     # consume cells until the pftype and then go to FIRST_COL
-    elif (state == DEFAULT and cell in pftypes):
+    elif (state is DEFAULT and cell in pftypes):
         currentRow.append(cell)
         allRows.append(SaleCategory(currentRow[0],
                                     currentRow[1],
@@ -89,17 +88,16 @@ for cell in s.split('\n'):
         currentRow = []
         state = FIRST_COL
     # throw away all cells on total rows
-    elif (state == FIRST_COL and 'TOTAL' in cell):
+    elif (state is FIRST_COL and 'TOTAL' in cell):
         state = IGNORE
     # start a new row with a new class type
-    elif (state == FIRST_COL and cell in classtypes):
+    elif (state is FIRST_COL and cell in classtypes):
         currentRow.append(cell)
         state = DEFAULT
     # start a new row with the same class type
-    elif (state == FIRST_COL):
+    elif (state is FIRST_COL):
         currentRow.append(allRows[-1].saletype)
         currentRow.append(cell)
         state = DEFAULT
 for row in allRows:
     print str(row)
-
